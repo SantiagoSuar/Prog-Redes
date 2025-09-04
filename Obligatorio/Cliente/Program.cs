@@ -1,10 +1,40 @@
 using System;
+using System.Net.Sockets;
+using Comunicacion;
 
-namespace Client
+namespace Cliente
 {
     class Program
     {
-       public static void Main(string[] args)
+        static void Main(string[] args)
+        {
+            ClienteApp app = new ClienteApp();
+            app.Conectar();
+            app.Menu();
+        }
+    }
+
+    public class ClienteApp
+    {
+        private TcpClient cliente;
+        private NetworkStream stream;
+
+        public void Conectar()
+        {
+            try
+            {
+                cliente = new TcpClient("127.0.0.1", 5000);
+                stream = cliente.GetStream();
+                Console.WriteLine("Conectado al servidor.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error conectando al servidor: {ex.Message}");
+                Environment.Exit(1);
+            }
+        }
+
+        public void Menu()
         {
             bool exit = false;
             while (!exit)
@@ -23,16 +53,13 @@ namespace Client
                 switch (choice)
                 {
                     case "1":
-                        Console.WriteLine("Has elegido 'Crear una cuenta'.");
-                        // Aca iría la llamada al método para crear una cuenta
+                        CrearCuenta();
                         break;
                     case "2":
-                        Console.WriteLine("Has elegido 'Iniciar sesión'.");
-                        // Aca iría la llamada al método para crear una cuenta
+                        Login();
                         break;
                     case "3":
-                        Console.WriteLine("Has elegido 'Ver clases disponibles'.");
-                        // Aca iría la llamada al método para crear una cuenta
+                        VerClases();
                         break;
                     case "4":
                         Console.WriteLine("Saliendo de la aplicación...");
@@ -48,6 +75,43 @@ namespace Client
                     Console.ReadLine();
                 }
             }
+        }
+
+        private void CrearCuenta()
+        {
+            Console.Write("Usuario: ");
+            string usuario = Console.ReadLine();
+            Console.Write("Contraseña: ");
+            string pass = Console.ReadLine();
+
+            var msg = new Mensaje("REQ", "01", $"{usuario}|{pass}");
+            Protocolo.Enviar(stream, msg);
+
+            Mensaje res = Protocolo.Recibir(stream);
+            Console.WriteLine($"Servidor: {res.Datos}");
+        }
+
+        private void Login()
+        {
+            Console.Write("Usuario: ");
+            string usuario = Console.ReadLine();
+            Console.Write("Contraseña: ");
+            string pass = Console.ReadLine();
+
+            var msg = new Mensaje("REQ", "02", $"{usuario}|{pass}");
+            Protocolo.Enviar(stream, msg);
+
+            Mensaje res = Protocolo.Recibir(stream);
+            Console.WriteLine($"Servidor: {res.Datos}");
+        }
+
+        private void VerClases()
+        {
+            var msg = new Mensaje("REQ", "03", "");
+            Protocolo.Enviar(stream, msg);
+
+            Mensaje res = Protocolo.Recibir(stream);
+            Console.WriteLine($"Clases disponibles:\n{res.Datos}");
         }
     }
 }

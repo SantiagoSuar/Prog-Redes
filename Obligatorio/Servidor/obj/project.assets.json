@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "Comunicacion/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Comunicacion.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Comunicacion.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Comunicacion/1.0.0": {
+      "type": "project",
+      "path": "../Comunicacion/Comunicacion.csproj",
+      "msbuildProject": "../Comunicacion/Comunicacion.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "Comunicacion >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Santiago\\.nuget\\packages\\": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj": {
+              "projectPath": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -67,13 +90,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.409/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\obj\\project.nuget.cache : Found invalid data while decoding."
-    }
-  ]
+  }
 }
