@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "h2dqD5FD2fE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\Servidor.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\obj\\project.nuget.cache : Found invalid data while decoding."
+    }
+  ]
+}
