@@ -1,33 +1,60 @@
-﻿// Servidor/Program.cs
-
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using Servidor;
 
 class Program
 {
-    public static void Main()
+    static void Main(string[] args)
     {
-        ServidorApp servidor = new ServidorApp();
-        servidor.Iniciar();
-    }
-}
+        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        int port = 10000;
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
-// Servidor/ServidorApp.cs
-public class ServidorApp
-{
-    private TcpListener listener;
+        Socket socketServidor = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socketServidor.Bind(localEndPoint);
+        socketServidor.Listen(10);
 
-    public void Iniciar()
-    {
-        listener = new TcpListener(IPAddress.Any, 5000);
-        listener.Start();
-        Console.WriteLine("Servidor iniciado en puerto 5000");
+        Console.WriteLine($"Servidor escuchando en {ipAddress}:{port}. Escribe 'q' para salir.");
 
+        
+        var store = new InMemoryStore();
+        // Thread para aceptar clientes
+        Thread acceptThread = new Thread(() =>
+        {
+            while (true)
+            {
+                try
+                {
+                    Socket socketCliente = socketServidor.Accept();
+                    Console.WriteLine("Cliente conectado.");
+
+                    // Adaptamos socket -> TcpClient para reusar tu ClienteConectado
+                    TcpClient tcpCliente = new TcpClient { Client = socketCliente };
+
+                    ClienteConectado cliente = new ClienteConectado(tcpCliente, store);
+                    Thread t = new Thread(cliente.Atender);
+                    t.IsBackground = true;
+                    t.Start();
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine("Error en Accept: " + ex.Message);
+                    break;
+                }
+            }
+        });
+        acceptThread.Start();
+
+        // Loop para cerrar servidor
         while (true)
         {
-            TcpClient cliente = listener.AcceptTcpClient();
-            Thread t = new Thread(() => new ClienteConectado(cliente).Atender());
-            t.Start();
+            string? cmd = Console.ReadLine();
+            if (cmd?.Trim().ToLower() == "q")
+            {
+                socketServidor.Close();
+                break;
+            }
         }
     }
 }

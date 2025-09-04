@@ -1,6 +1,6 @@
 namespace Servidor.Dominio;
 
-public class Usuario
+public class User
 {
     public required string Username { get; init; }
     public required string Password { get; init; }
@@ -9,7 +9,7 @@ public class Usuario
     
     public override bool Equals(object? obj)
     {
-        Usuario user = obj as Usuario;
+        User user = obj as User;
         return this.Username == user.Username;
     }
 }
