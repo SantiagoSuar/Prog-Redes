@@ -13,7 +13,7 @@ class Program
         socketCliente.Connect(new IPEndPoint(ip, port));
         Console.WriteLine($"Conectado al servidor {ip}:{port}");
 
-        using NetworkStream stream = new NetworkStream(socketCliente);
+        // Comunicación directa, solo con socket, sin NetworkStream
 
         bool seguir = true;
         while (seguir)
@@ -67,8 +67,8 @@ class Program
                     continue;
             }
 
-            Protocolo.Enviar(stream, req);
-            Mensaje res = Protocolo.Recibir(stream);
+            Protocolo.Enviar(socketCliente, req);
+            Mensaje res = Protocolo.Recibir(socketCliente);
             Console.WriteLine($"\n>>> Respuesta [{res.CMD}]: {res.Datos}\n");
         }
 

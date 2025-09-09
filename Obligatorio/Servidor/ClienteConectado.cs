@@ -6,15 +6,13 @@ using Servidor;
 
 public class ClienteConectado
 {
-    private TcpClient cliente;
-    private NetworkStream stream;
+    private Socket socket;
     private InMemoryStore store;
     private string? usuarioLogueado = null;
 
-    public ClienteConectado(TcpClient c, InMemoryStore store)
+    public ClienteConectado(Socket socket, InMemoryStore store)
     {
-        cliente = c;
-        stream = cliente.GetStream();
+        this.socket = socket;
         this.store = store;
     }
 
@@ -24,18 +22,18 @@ public class ClienteConectado
         {
             while (true)
             {
-                Mensaje req = Protocolo.Recibir(stream);
+                Mensaje req = Protocolo.Recibir(socket);
                 Console.WriteLine($"[{DateTime.Now}] CMD recibido: {req.CMD}");
 
                 Mensaje res = Procesar(req);
 
-                Protocolo.Enviar(stream, res);
+                Protocolo.Enviar(socket, res);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Cliente desconectado: {ex.Message}");
-            cliente.Close();
+            socket.Close();
         }
     }
 

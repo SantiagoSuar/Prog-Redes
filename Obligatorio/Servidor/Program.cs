@@ -29,10 +29,7 @@ class Program
                     Socket socketCliente = socketServidor.Accept();
                     Console.WriteLine("Cliente conectado.");
 
-                    // Adaptamos socket -> TcpClient para reusar tu ClienteConectado
-                    TcpClient tcpCliente = new TcpClient { Client = socketCliente };
-
-                    ClienteConectado cliente = new ClienteConectado(tcpCliente, store);
+                    ClienteConectado cliente = new ClienteConectado(socketCliente, store);
                     Thread t = new Thread(cliente.Atender);
                     t.IsBackground = true;
                     t.Start();
