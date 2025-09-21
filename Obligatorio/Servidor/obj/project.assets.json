@@ -27,32 +27,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Santiago\\.nuget\\packages\\": {}
+    "C:\\Users\\Joaquin Cabrera\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\Servidor.csproj",
+      "projectUniqueName": "C:\\Users\\Joaquin Cabrera\\Apps\\Desktop\\Obligatorio Programacion de Redes\\Prog-Redes\\Obligatorio\\Servidor\\Servidor.csproj",
       "projectName": "Servidor",
-      "projectPath": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\Servidor.csproj",
-      "packagesPath": "C:\\Users\\Santiago\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Servidor\\obj\\",
+      "projectPath": "C:\\Users\\Joaquin Cabrera\\Apps\\Desktop\\Obligatorio Programacion de Redes\\Prog-Redes\\Obligatorio\\Servidor\\Servidor.csproj",
+      "packagesPath": "C:\\Users\\Joaquin Cabrera\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Joaquin Cabrera\\Apps\\Desktop\\Obligatorio Programacion de Redes\\Prog-Redes\\Obligatorio\\Servidor\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Santiago\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Joaquin Cabrera\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj": {
-              "projectPath": "C:\\Users\\Santiago\\SEM6\\Prog Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj"
+            "C:\\Users\\Joaquin Cabrera\\Apps\\Desktop\\Obligatorio Programacion de Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj": {
+              "projectPath": "C:\\Users\\Joaquin Cabrera\\Apps\\Desktop\\Obligatorio Programacion de Redes\\Prog-Redes\\Obligatorio\\Comunicacion\\Comunicacion.csproj"
             }
           }
         }
@@ -87,7 +89,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.409/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

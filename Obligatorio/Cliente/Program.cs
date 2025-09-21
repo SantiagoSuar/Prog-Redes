@@ -6,6 +6,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        //TO DO: definir ip y bindear antes de establecer conexion
         IPAddress ip = IPAddress.Parse("127.0.0.1");
         int port = 10000;
 
@@ -71,7 +72,7 @@ class Program
             Mensaje res = Protocolo.Recibir(stream);
             Console.WriteLine($"\n>>> Respuesta [{res.CMD}]: {res.Datos}\n");
         }
-
+        //revisar si presisamos hacer shutdown antes de cerrar
         socketCliente.Close();
         Console.WriteLine("Cliente cerrado.");
     }
