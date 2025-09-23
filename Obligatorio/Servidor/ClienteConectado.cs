@@ -90,6 +90,17 @@ public class ClienteConectado
 
                 var modificado = store.ModificarClase(usuarioLogueado, idClass, nuevoNombre, nuevaDesc, nuevoCupo, nuevaDuracion);
                 return new Mensaje("RES", "12", modificado ? "OK|Clase modificada" : "ERR|No se pudo modificar");
+            
+            case "13": // ELIMINAR CLASE
+                if (usuarioLogueado == null) return new Mensaje("RES", "13", "ERR|Debe loguearse");
+                if (datos.Length < 1) return new Mensaje("RES", "13", "ERR|Falta ID clase");
+
+                int idDel;
+                if (!int.TryParse(datos[0], out idDel)) return new Mensaje("RES", "13", "ERR|ID inválido");
+
+                var eliminado = store.EliminarClase(usuarioLogueado, idDel);
+                return new Mensaje("RES", "13", eliminado ? "OK|Clase eliminada" : "ERR|No se pudo eliminar");
+
 
             
             case "20": // INSCRIBIRSE

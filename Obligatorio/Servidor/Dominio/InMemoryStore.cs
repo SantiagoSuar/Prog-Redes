@@ -111,6 +111,41 @@ namespace Servidor
                 return true;
             }
         }
+        public bool EliminarClase(string username, int idClase)
+        {
+            lock (_lock)
+            {
+                if (!_clases.TryGetValue(idClase, out var clase)) return false;
+
+                // Validaciones
+                if (clase.Creador != username) return false; // solo el creador
+                if (clase.InicioUtc <= DateTime.UtcNow) return false; // ya empezó
+                if (clase.Inscritos.Count > 0) return false; // hay inscriptos
+
+                // Borrar imágenes asociadas si existen
+                try
+                {
+                    if (!string.IsNullOrEmpty(clase.ImagenPath) && File.Exists(clase.ImagenPath))
+                    {
+                        File.Delete(clase.ImagenPath);
+                        string? carpeta = Path.GetDirectoryName(clase.ImagenPath);
+                        if (!string.IsNullOrEmpty(carpeta) && Directory.Exists(carpeta))
+                        {
+                            Directory.Delete(carpeta, true);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[WARN] No se pudo borrar imágenes de la clase {idClase}: {ex.Message}");
+                }
+
+                // Finalmente eliminar la clase del diccionario
+                _clases.Remove(idClase);
+                return true;
+            }
+        }
+
 
 
 

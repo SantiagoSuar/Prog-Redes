@@ -81,6 +81,12 @@ class Program
                     string nDur = Console.ReadLine() ?? "60";
                     req = new Mensaje("REQ", "12", $"{idMod}|{nNombre}|{nDesc}|{nCupo}|{nDur}");
                     break;
+                case "8": // Eliminar clase
+                    Console.Write("ID clase: ");
+                    string idDel = Console.ReadLine() ?? "";
+                    req = new Mensaje("REQ", "13", idDel);
+                    break;
+
 
 
                 case "0": // Salir
@@ -114,6 +120,7 @@ class Program
         Console.WriteLine("5. Inscribirse en clase");
         Console.WriteLine("6. Cancelar inscripción");
         Console.WriteLine("7. Modificar clase");
+        Console.WriteLine("8. Eliminar clase");
         Console.WriteLine("0. Salir");
         Console.WriteLine("====================\n");
     }

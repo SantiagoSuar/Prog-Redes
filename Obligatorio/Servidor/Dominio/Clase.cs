@@ -12,6 +12,5 @@ public class Clase
     public List<string> Imagenes { get; } = new List<string>();
     public HashSet<string> Inscritos { get; set; } = new();
     public string Creador { get; set; } = "";
-
-
+    public string? ImagenPath { get; set; }
 }
