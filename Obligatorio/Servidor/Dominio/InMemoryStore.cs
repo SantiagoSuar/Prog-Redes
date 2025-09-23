@@ -145,6 +145,32 @@ namespace Servidor
                 return true;
             }
         }
+        public List<Clase> ListarClasesFiltradas(string? palabraClave, DateTime? fechaMin, int? duracionMax)
+        {
+            lock (_lock)
+            {
+                IEnumerable<Clase> query = _clases.Values;
+
+                if (!string.IsNullOrWhiteSpace(palabraClave))
+                {
+                    string f = palabraClave.ToLowerInvariant();
+                    query = query.Where(c => c.Nombre.ToLower().Contains(f) || c.Descripcion.ToLower().Contains(f));
+                }
+
+                if (fechaMin.HasValue)
+                {
+                    query = query.Where(c => c.InicioUtc >= fechaMin.Value);
+                }
+
+                if (duracionMax.HasValue)
+                {
+                    query = query.Where(c => c.DuracionMin <= duracionMax.Value);
+                }
+
+                return query.OrderBy(c => c.InicioUtc).ToList();
+            }
+        }
+
 
 
 

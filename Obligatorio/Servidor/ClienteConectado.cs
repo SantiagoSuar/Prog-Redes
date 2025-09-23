@@ -66,15 +66,21 @@ public class ClienteConectado
                 var c = store.CrearClase(usuarioLogueado, nombre, desc, cupo, duracion, inicio);
                 return new Mensaje("RES", "10", $"OK|Clase {c.Id} creada");
 
-            case "11": // LISTAR CLASES
-                var clases = store.ListarClases();
+            case "11": // LISTAR CLASES (con filtros)
+                string palabraClave = datos.Length > 0 ? datos[0] : "";
+                DateTime? fechaMin = null;
+                if (datos.Length > 1 && DateTime.TryParse(datos[1], out var f)) fechaMin = f;
+                int? duracionMax = null;
+                if (datos.Length > 2 && int.TryParse(datos[2], out var d)) duracionMax = d;
+
+                var clasesFiltradas = store.ListarClasesFiltradas(palabraClave, fechaMin, duracionMax);
                 var sb = new StringBuilder();
-                foreach (var clase in clases)
+                foreach (var clase in clasesFiltradas)
                 {
-                    // Enviamos 6 campos separados por "|"
                     sb.AppendLine($"{clase.Id}|{clase.Nombre}|{clase.InicioUtc:o}|{clase.DuracionMin}|{clase.CupoMax}|{clase.Inscritos.Count}");
                 }
                 return new Mensaje("RES", "11", sb.ToString());
+
 
             case "12": // MODIFICAR CLASE
                 if (usuarioLogueado == null) return new Mensaje("RES", "12", "ERR|Debe loguearse");

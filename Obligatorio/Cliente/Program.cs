@@ -54,9 +54,18 @@ class Program
                     req = new Mensaje("REQ", "10", $"{nombre}|{desc}|{cupo}|{duracion}");
                     break;
 
-                case "4": // Listar clases
-                    req = new Mensaje("REQ", "11", "");
+                case "4": // Listar clases con filtros
+                    Console.Write("Palabra clave (enter para omitir): ");
+                    string filtro = Console.ReadLine() ?? "";
+                    Console.Write("Fecha mínima (yyyy-MM-dd o enter para omitir): ");
+                    string fStr = Console.ReadLine() ?? "";
+                    Console.Write("Duración máxima en min (enter para omitir): ");
+                    string dStr = Console.ReadLine() ?? "";
+
+                    string filtros = $"{filtro}|{fStr}|{dStr}";
+                    req = new Mensaje("REQ", "11", filtros);
                     break;
+
                 case "5": // Inscribirse en clase
                     Console.Write("ID de clase: ");
                     string idIns = Console.ReadLine() ?? "";
@@ -116,7 +125,7 @@ class Program
         Console.WriteLine("1. Signup (registrar usuario)");
         Console.WriteLine("2. Login");
         Console.WriteLine("3. Crear clase");
-        Console.WriteLine("4. Listar clases");
+        Console.WriteLine("4. Listar clases (con filtros opcionales)");
         Console.WriteLine("5. Inscribirse en clase");
         Console.WriteLine("6. Cancelar inscripción");
         Console.WriteLine("7. Modificar clase");
