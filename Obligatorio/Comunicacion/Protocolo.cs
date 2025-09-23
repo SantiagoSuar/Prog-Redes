@@ -5,46 +5,56 @@ namespace Comunicacion;
 
 public static class Protocolo
 {
+    // Enviar mensaje serializado al socket
     public static void Enviar(Socket socket, Mensaje msg)
     {
         string datos = msg.Datos ?? "";
         byte[] datosBytes = Encoding.UTF8.GetBytes(datos);
-        string largo = datosBytes.Length.ToString().PadLeft(4, '0');
 
-        string trama = msg.Header + msg.CMD + largo + datos;
-        byte[] buffer = Encoding.UTF8.GetBytes(trama);
+        // Largo en caracteres ASCII (4 dígitos)
+        string largoStr = datosBytes.Length.ToString().PadLeft(4, '0');
+        byte[] headerCmdLen = Encoding.UTF8.GetBytes(msg.Header + msg.CMD + largoStr);
 
-        int enviados = 0;
-        while (enviados < buffer.Length)
-        {
-            int n = socket.Send(buffer, enviados, buffer.Length - enviados, SocketFlags.None);
-            if (n <= 0) throw new IOException("Error al enviar datos");
-            enviados += n;
-        }
+        // Mandar primero header+cmd+largo
+        socket.Send(headerCmdLen);
+        // Luego los datos reales
+        if (datosBytes.Length > 0)
+            socket.Send(datosBytes);
     }
 
+    // Recibir mensaje completo desde socket
     public static Mensaje Recibir(Socket socket)
     {
-        string header = LeerExacto(socket, 3);
-        string cmd = LeerExacto(socket, 2);
-        string largoStr = LeerExacto(socket, 4);
+        string header = LeerExactoString(socket, 3);
+        string cmd = LeerExactoString(socket, 2);
+        string largoStr = LeerExactoString(socket, 4);
 
         int largo = int.Parse(largoStr);
-        string datos = largo > 0 ? LeerExacto(socket, largo) : "";
+
+        byte[] datosBytes = LeerExactoBytes(socket, largo);
+        string datos = Encoding.UTF8.GetString(datosBytes);
 
         return new Mensaje(header, cmd, datos);
     }
 
-    private static string LeerExacto(Socket socket, int cantidad)
+    // Lee exactamente N bytes y devuelve como string
+    private static string LeerExactoString(Socket socket, int cantidad)
+    {
+        byte[] buffer = LeerExactoBytes(socket, cantidad);
+        return Encoding.UTF8.GetString(buffer, 0, cantidad);
+    }
+
+    // Lee exactamente N bytes en un array
+    private static byte[] LeerExactoBytes(Socket socket, int cantidad)
     {
         byte[] buffer = new byte[cantidad];
         int leidos = 0;
         while (leidos < cantidad)
         {
             int n = socket.Receive(buffer, leidos, cantidad - leidos, SocketFlags.None);
-            if (n <= 0) throw new IOException("Conexión cerrada por el cliente.");
+            if (n <= 0) throw new IOException("Conexión cerrada.");
             leidos += n;
         }
-        return Encoding.UTF8.GetString(buffer, 0, cantidad);
+        return buffer;
     }
 }

@@ -71,10 +71,46 @@ public class ClienteConectado
                 var sb = new StringBuilder();
                 foreach (var clase in clases)
                 {
-                    sb.AppendLine($"{clase.Id}|{clase.Nombre}|{clase.InicioUtc:o}|{clase.DuracionMin}|{clase.CupoMax}");
+                    // Enviamos 6 campos separados por "|"
+                    sb.AppendLine($"{clase.Id}|{clase.Nombre}|{clase.InicioUtc:o}|{clase.DuracionMin}|{clase.CupoMax}|{clase.Inscritos.Count}");
                 }
                 return new Mensaje("RES", "11", sb.ToString());
 
+            case "12": // MODIFICAR CLASE
+                if (usuarioLogueado == null) return new Mensaje("RES", "12", "ERR|Debe loguearse");
+                if (datos.Length < 5) return new Mensaje("RES", "12", "ERR|Faltan parámetros");
+
+                int idClass;
+                if (!int.TryParse(datos[0], out idClass)) return new Mensaje("RES", "12", "ERR|ID inválido");
+
+                string nuevoNombre = datos[1];
+                string nuevaDesc = datos[2];
+                int nuevoCupo = int.Parse(datos[3]);
+                int nuevaDuracion = int.Parse(datos[4]);
+
+                var modificado = store.ModificarClase(usuarioLogueado, idClass, nuevoNombre, nuevaDesc, nuevoCupo, nuevaDuracion);
+                return new Mensaje("RES", "12", modificado ? "OK|Clase modificada" : "ERR|No se pudo modificar");
+
+            
+            case "20": // INSCRIBIRSE
+                if (usuarioLogueado == null) return new Mensaje("RES", "20", "ERR|Debe loguearse");
+                if (datos.Length < 1) return new Mensaje("RES", "20", "ERR|Falta ID clase");
+
+                int idClase;
+                if (!int.TryParse(datos[0], out idClase)) return new Mensaje("RES", "20", "ERR|ID inválido");
+
+                var inscripto = store.InscribirUsuario(usuarioLogueado, idClase);
+                return new Mensaje("RES", "20", inscripto ? "OK|Inscripción exitosa" : "ERR|No se pudo inscribir");
+            
+            case "21": // CANCELAR INSCRIPCIÓN
+                if (usuarioLogueado == null) return new Mensaje("RES", "21", "ERR|Debe loguearse");
+                if (datos.Length < 1) return new Mensaje("RES", "21", "ERR|Falta ID clase");
+
+                if (!int.TryParse(datos[0], out idClase)) return new Mensaje("RES", "21", "ERR|ID inválido");
+
+                var cancelada = store.CancelarInscripcion(usuarioLogueado, idClase);
+                return new Mensaje("RES", "21", cancelada ? "OK|Inscripción cancelada" : "ERR|No se pudo cancelar");
+            
             default:
                 return new Mensaje("RES", "99", "ERR|Comando no reconocido");
         }
