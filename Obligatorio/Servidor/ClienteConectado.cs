@@ -128,6 +128,18 @@ public class ClienteConectado
                 var cancelada = store.CancelarInscripcion(usuarioLogueado, idClase);
                 return new Mensaje("RES", "21", cancelada ? "OK|Inscripción cancelada" : "ERR|No se pudo cancelar");
             
+            case "30": // HISTORIAL
+                if (usuarioLogueado == null) return new Mensaje("RES", "30", "ERR|Debe loguearse");
+
+                var actividades = store.ObtenerHistorial(usuarioLogueado);
+                var sbHist = new StringBuilder();
+                foreach (var act in actividades)
+                {
+                    sbHist.AppendLine($"{act.ClaseId}|{act.NombreClase}|{act.Estado}|{act.Fecha:o}");
+                }
+                return new Mensaje("RES", "30", sbHist.ToString());
+
+            
             default:
                 return new Mensaje("RES", "99", "ERR|Comando no reconocido");
         }

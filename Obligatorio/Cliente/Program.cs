@@ -95,6 +95,10 @@ class Program
                     string idDel = Console.ReadLine() ?? "";
                     req = new Mensaje("REQ", "13", idDel);
                     break;
+                case "9": // Historial
+                    req = new Mensaje("REQ", "30", "");
+                    break;
+
 
 
 
@@ -109,10 +113,13 @@ class Program
 
             Protocolo.Enviar(socketCliente, req);
             Mensaje res = Protocolo.Recibir(socketCliente);
-            if (res.CMD == "11") // LISTAR CLASES → tabla
+            if (res.CMD == "11")
                 MostrarClases(res.Datos ?? "");
+            else if (res.CMD == "30")
+                MostrarHistorial(res.Datos ?? "");
             else
                 Console.WriteLine($"\n>>> Respuesta [{res.CMD}]: {res.Datos}\n");
+
         }
 
         socketCliente.Close();
@@ -130,6 +137,7 @@ class Program
         Console.WriteLine("6. Cancelar inscripción");
         Console.WriteLine("7. Modificar clase");
         Console.WriteLine("8. Eliminar clase");
+        Console.WriteLine("9. Ver historial de actividades");
         Console.WriteLine("0. Salir");
         Console.WriteLine("====================\n");
     }
@@ -165,4 +173,29 @@ class Program
 
         Console.WriteLine(new string('=', 65));
     }
+    static void MostrarHistorial(string datos)
+    {
+        if (string.IsNullOrWhiteSpace(datos))
+        {
+            Console.WriteLine("\nNo hay actividades en el historial.\n");
+            return;
+        }
+
+        Console.WriteLine("\n=== HISTORIAL DE ACTIVIDADES ===");
+        Console.WriteLine($"{"ClaseID",-8} {"Nombre",-15} {"Estado",-12} {"Fecha",-25}");
+        Console.WriteLine(new string('-', 65));
+
+        string[] lineas = datos.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var linea in lineas)
+        {
+            string[] campos = linea.Split('|');
+            if (campos.Length >= 4)
+            {
+                Console.WriteLine($"{campos[0],-8} {campos[1],-15} {campos[2],-12} {campos[3],-25}");
+            }
+        }
+
+        Console.WriteLine(new string('=', 65));
+    }
+
 }

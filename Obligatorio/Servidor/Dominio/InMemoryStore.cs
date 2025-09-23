@@ -13,6 +13,7 @@ namespace Servidor
         private readonly object _lock = new object();
         private readonly Dictionary<string, User> _users = new();
         private readonly Dictionary<int, Clase> _clases = new();
+        private readonly Dictionary<string, List<Actividad>> _historial = new();
         private int _nextClaseId = 1;
 
         public bool CrearUsuario(string username, string password)
@@ -74,6 +75,7 @@ namespace Servidor
 
                 
                 clase.Inscritos.Add(username);
+                RegistrarActividad(username, clase, "INSCRIPTO");
                 return true;
             }
         }
@@ -88,7 +90,14 @@ namespace Servidor
                 if (tiempoRestante.TotalMinutes < 2) return false; // regla de la letra
 
                 
-                return clase.Inscritos.Remove(username);
+                bool removed = clase.Inscritos.Remove(username);
+                if (removed)
+                {
+                    // Registrar historial
+                    RegistrarActividad(username, clase, "CANCELADO");
+                }
+
+                return removed;
             }
         }
         public bool ModificarClase(string username, int idClase, string nombre, string desc, int cupo, int duracion)
@@ -171,6 +180,41 @@ namespace Servidor
             }
         }
 
+        private void RegistrarActividad(string username, Clase clase, string estado)
+        {
+            if (!_historial.ContainsKey(username))
+                _historial[username] = new List<Actividad>();
+
+            _historial[username].Add(new Actividad
+            {
+                ClaseId = clase.Id,
+                NombreClase = clase.Nombre,
+                Estado = estado,
+                Fecha = DateTime.UtcNow
+            });
+        }
+        public List<Actividad> ObtenerHistorial(string username)
+        {
+            lock (_lock)
+            {
+                if (!_historial.ContainsKey(username))
+                    return new List<Actividad>();
+
+                //  Marcar como finalizado las clases vencidas
+                foreach (var act in _historial[username])
+                {
+                    if (act.Estado == "INSCRIPTO" && _clases.TryGetValue(act.ClaseId, out var clase))
+                    {
+                        if (clase.InicioUtc.AddMinutes(clase.DuracionMin) <= DateTime.UtcNow)
+                        {
+                            act.Estado = "FINALIZADO";
+                        }
+                    }
+                }
+
+                return new List<Actividad>(_historial[username]);
+            }
+        }
 
 
 
